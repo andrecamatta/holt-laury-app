@@ -1,5 +1,6 @@
 class HoltLauryTest {
     constructor() {
+        // Estado do jogo
         this.currentRound = 0;
         this.balance = 1000;
         this.rhoEstimate = null;
@@ -20,7 +21,7 @@ class HoltLauryTest {
     }
 
     initializeEventListeners() {
-        // Start button
+        // Botão de início
         document.getElementById('start-test').addEventListener('click', () => this.startTest());
 
         // Choice buttons
@@ -76,10 +77,10 @@ class HoltLauryTest {
     }
 
     interpretRho(rho) {
-        if (rho > 1.2) return "You show strong risk aversion, preferring safer options even with lower expected value.";
-        if (rho > 0.8) return "You show moderate risk aversion, balancing between risk and reward.";
-        if (rho > 0.5) return "You are nearly risk neutral, focusing mainly on expected value.";
-        return "You show risk-seeking behavior, preferring chances at higher rewards.";
+        if (rho > 1.2) return "Você demonstra forte aversão ao risco, preferindo opções mais seguras mesmo com menor valor esperado.";
+        if (rho > 0.8) return "Você demonstra aversão moderada ao risco, equilibrando entre risco e recompensa.";
+        if (rho > 0.5) return "Você é quase neutro ao risco, focando principalmente no valor esperado.";
+        return "Você demonstra comportamento de busca por risco, preferindo chances de maiores recompensas.";
     }
 
     simulateOutcome(option) {
@@ -105,8 +106,8 @@ class HoltLauryTest {
         const rhoExplanation = document.getElementById('rho-explanation');
 
         description.innerHTML = `
-            <p>You won $${outcome}!</p>
-            <p>New balance: $${this.balance}</p>
+            <p>Você ganhou $${outcome}!</p>
+            <p>Novo saldo: $${this.balance}</p>
         `;
 
         rhoExplanation.innerHTML = `

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Holt-Laury Test Simulator</title>
+    <title>Simulador do Teste Holt-Laury</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -11,38 +11,38 @@
     <div id="app">
         <!-- Welcome Screen -->
         <div id="welcome-screen" class="screen active">
-            <h1>Holt-Laury Test Simulator</h1>
+            <h1>Simulador do Teste Holt-Laury</h1>
             <div class="intro-text">
-                <p>Welcome to the interactive Holt-Laury test simulator! This educational tool will help you understand risk preferences through a series of choices.</p>
-                <p>You'll start with a virtual balance of $1000 and make several decisions between safer and riskier options.</p>
-                <p>After each choice, we'll explain how your decision affects the estimation of your risk aversion parameter (ρ).</p>
+                <p>Bem-vindo ao simulador interativo do teste Holt-Laury! Esta ferramenta educacional irá ajudá-lo a entender preferências de risco através de uma série de escolhas.</p>
+                <p>Você começará com um saldo virtual de $1000 e fará várias decisões entre opções mais seguras e mais arriscadas.</p>
+                <p>Após cada escolha, explicaremos como sua decisão afeta a estimativa do seu parâmetro de aversão ao risco (ρ).</p>
             </div>
-            <button id="start-test" class="primary-button">Start Test</button>
+            <button id="start-test" class="primary-button">Iniciar Teste</button>
         </div>
 
         <!-- Game Screen -->
         <div id="game-screen" class="screen">
             <div class="header">
-                <div class="balance">Balance: $<span id="current-balance">1000</span></div>
-                <div class="progress">Round <span id="current-round">1</span>/10</div>
+                <div class="balance">Saldo: $<span id="current-balance">1000</span></div>
+                <div class="progress">Rodada <span id="current-round">1</span>/10</div>
             </div>
 
             <div class="choice-container">
                 <div class="choice-card" id="choice-a">
-                    <h3>Option A</h3>
+                    <h3>Opção A</h3>
                     <div class="probabilities"></div>
-                    <button class="choice-button">Choose A</button>
+                    <button class="choice-button">Escolher A</button>
                 </div>
 
                 <div class="choice-card" id="choice-b">
-                    <h3>Option B</h3>
+                    <h3>Opção B</h3>
                     <div class="probabilities"></div>
-                    <button class="choice-button">Choose B</button>
+                    <button class="choice-button">Escolher B</button>
                 </div>
             </div>
 
             <div class="rho-display">
-                <h3>Current ρ Estimate</h3>
+                <h3>Estimativa Atual do ρ</h3>
                 <div id="rho-value">-</div>
             </div>
         </div>
@@ -50,28 +50,28 @@
         <!-- Result Modal -->
         <div id="result-modal" class="modal">
             <div class="modal-content">
-                <h2>Choice Result</h2>
+                <h2>Resultado da Escolha</h2>
                 <div id="result-description"></div>
                 <div id="rho-explanation"></div>
-                <button id="continue-button" class="primary-button">Continue</button>
+                <button id="continue-button" class="primary-button">Continuar</button>
             </div>
         </div>
 
         <!-- Final Screen -->
         <div id="final-screen" class="screen">
-            <h2>Test Complete!</h2>
+            <h2>Teste Concluído!</h2>
             <div class="final-stats">
                 <div class="stat">
-                    <h3>Final ρ Value</h3>
+                    <h3>Valor Final do ρ</h3>
                     <div id="final-rho"></div>
                 </div>
                 <div class="stat">
-                    <h3>Final Balance</h3>
+                    <h3>Saldo Final</h3>
                     <div id="final-balance"></div>
                 </div>
             </div>
             <div id="risk-interpretation"></div>
-            <button id="restart-test" class="primary-button">Try Again</button>
+            <button id="restart-test" class="primary-button">Tentar Novamente</button>
         </div>
     </div>
 
