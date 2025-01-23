@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holt-Laury Test Simulator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div id="app">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <h1>Holt-Laury Test Simulator</h1>
+            <div class="intro-text">
+                <p>Welcome to the interactive Holt-Laury test simulator! This educational tool will help you understand risk preferences through a series of choices.</p>
+                <p>You'll start with a virtual balance of $1000 and make several decisions between safer and riskier options.</p>
+                <p>After each choice, we'll explain how your decision affects the estimation of your risk aversion parameter (ρ).</p>
+            </div>
+            <button id="start-test" class="primary-button">Start Test</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="header">
+                <div class="balance">Balance: $<span id="current-balance">1000</span></div>
+                <div class="progress">Round <span id="current-round">1</span>/10</div>
+            </div>
+
+            <div class="choice-container">
+                <div class="choice-card" id="choice-a">
+                    <h3>Option A</h3>
+                    <div class="probabilities"></div>
+                    <button class="choice-button">Choose A</button>
+                </div>
+
+                <div class="choice-card" id="choice-b">
+                    <h3>Option B</h3>
+                    <div class="probabilities"></div>
+                    <button class="choice-button">Choose B</button>
+                </div>
+            </div>
+
+            <div class="rho-display">
+                <h3>Current ρ Estimate</h3>
+                <div id="rho-value">-</div>
+            </div>
+        </div>
+
+        <!-- Result Modal -->
+        <div id="result-modal" class="modal">
+            <div class="modal-content">
+                <h2>Choice Result</h2>
+                <div id="result-description"></div>
+                <div id="rho-explanation"></div>
+                <button id="continue-button" class="primary-button">Continue</button>
+            </div>
+        </div>
+
+        <!-- Final Screen -->
+        <div id="final-screen" class="screen">
+            <h2>Test Complete!</h2>
+            <div class="final-stats">
+                <div class="stat">
+                    <h3>Final ρ Value</h3>
+                    <div id="final-rho"></div>
+                </div>
+                <div class="stat">
+                    <h3>Final Balance</h3>
+                    <div id="final-balance"></div>
+                </div>
+            </div>
+            <div id="risk-interpretation"></div>
+            <button id="restart-test" class="primary-button">Try Again</button>
+        </div>
+    </div>
+
+    <script src="js/holtLaury.js"></script>
+</body>
+</html>
