@@ -1,12 +1,13 @@
 :root {
     --primary-color: #6C63FF;
     --secondary-color: #4CAF50;
-    --background-dark: #1A1A1A;
-    --card-background: #2A2A2A;
-    --text-primary: #FFFFFF;
-    --text-secondary: #B0B0B0;
+    --background-dark: #f8f9fa;
+    --card-background: #FFFFFF;
+    --text-primary: #2d2d2d;
+    --text-secondary: #5a5a5a;
     --danger-color: #FF4B4B;
     --success-color: #4CAF50;
+    --light-theme-border: #e0e0e0;
 }
 
 * {

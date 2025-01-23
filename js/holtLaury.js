@@ -5,11 +5,41 @@ class HoltLauryTest {
         this.balance = 1000;
         this.rhoEstimate = null;
         this.choices = [];
+        this.reversions = 0;
+        this.lastChoice = null;
+        this.controlAnswers = new Map();
+        this.controlQuestions = [
+            { 
+                optionA: { p: 1.0, high: 10, low: 10 }, // R$10 garantidos
+                optionB: { p: 0.5, high: 10, low: 0 },   // 50% chance de R$10
+                correctChoice: 'A',
+                explanation: "Opção A é claramente superior (R$10 garantidos vs 50% de chance)"
+            },
+            {
+                optionA: { p: 1.0, high: 20, low: 20 },  // R$20 garantidos
+                optionB: { p: 0.9, high: 5, low: 0 },    // 90% chance de R$5
+                correctChoice: 'A',
+                explanation: "Opção A é melhor (R$20 garantidos vs pequena chance de R$5)"
+            }
+        ];
+
         this.rounds = [
-            { optionA: { p: 0.1, high: 200, low: 160 }, optionB: { p: 0.1, high: 385, low: 10 } },
+            // Perguntas de controle inseridas aleatoriamente
+            { 
+                optionA: { p: 1.0, high: 10, low: 10 }, 
+                optionB: { p: 0.5, high: 10, low: 0 },
+                isControl: true,
+                controlIndex: 0 
+            },
             { optionA: { p: 0.2, high: 200, low: 160 }, optionB: { p: 0.2, high: 385, low: 10 } },
             { optionA: { p: 0.3, high: 200, low: 160 }, optionB: { p: 0.3, high: 385, low: 10 } },
             { optionA: { p: 0.4, high: 200, low: 160 }, optionB: { p: 0.4, high: 385, low: 10 } },
+            { 
+                optionA: { p: 1.0, high: 20, low: 20 }, 
+                optionB: { p: 0.9, high: 5, low: 0 },
+                isControl: true,
+                controlIndex: 1 
+            },
             { optionA: { p: 0.5, high: 200, low: 160 }, optionB: { p: 0.5, high: 385, low: 10 } },
             { optionA: { p: 0.6, high: 200, low: 160 }, optionB: { p: 0.6, high: 385, low: 10 } },
             { optionA: { p: 0.7, high: 200, low: 160 }, optionB: { p: 0.7, high: 385, low: 10 } },
@@ -95,15 +125,34 @@ class HoltLauryTest {
         const outcome = this.simulateOutcome(choice);
         this.balance += outcome;
         this.rhoEstimate = this.calculateRho();
-
+        
         // Update displays
         document.getElementById('current-balance').textContent = this.balance;
         document.getElementById('rho-value').textContent = this.rhoEstimate.toFixed(2);
 
         // Show result modal
         const modal = document.getElementById('result-modal');
+        const modalContent = document.querySelector('.modal-content');
         const description = document.getElementById('result-description');
         const rhoExplanation = document.getElementById('rho-explanation');
+        
+        // Reset styles
+        modalContent.classList.remove('result-correct', 'result-incorrect');
+        modalContent.querySelectorAll('.result-icon').forEach(icon => icon.remove());
+
+        // Check if control question and apply feedback
+        const currentRound = this.rounds[this.currentRound];
+        if (currentRound.isControl) {
+            const correctAnswer = this.controlQuestions[currentRound.controlIndex].correctChoice;
+            const isCorrect = choice === correctAnswer;
+            
+            modalContent.classList.add(isCorrect ? 'result-correct' : 'result-incorrect');
+            
+            const icon = document.createElement('div');
+            icon.className = 'result-icon';
+            icon.textContent = isCorrect ? '✅' : '❌';
+            modalContent.prepend(icon);
+        }
 
         description.innerHTML = `
             <p>Você ganhou $${outcome}!</p>
@@ -130,10 +179,41 @@ class HoltLauryTest {
     }
 
     finishTest() {
+        // Validar consistência
+        let validationMessages = [];
+        
+        // 1. Verificar reversões
+        if (this.reversions > 2) {
+            validationMessages.push(`⚠️ ${this.reversions} reversões detectadas (máximo permitido: 2)`);
+        }
+        
+        // 2. Verificar perguntas de controle
+        this.controlQuestions.forEach((q, index) => {
+            const answer = this.controlAnswers.get(index);
+            if (answer && answer !== q.correctChoice) {
+                validationMessages.push(`❌ Erro na pergunta-controle ${index + 1}: ${q.explanation}`);
+            }
+        });
+        
+        // Atualizar tela final
         this.switchScreen('game-screen', 'final-screen');
         document.getElementById('final-rho').textContent = this.rhoEstimate.toFixed(2);
         document.getElementById('final-balance').textContent = `$${this.balance}`;
-        document.getElementById('risk-interpretation').textContent = this.interpretRho(this.rhoEstimate);
+        
+        const riskElement = document.getElementById('risk-interpretation');
+        riskElement.innerHTML = this.interpretRho(this.rhoEstimate);
+        
+        // Adicionar mensagens de validação
+        if (validationMessages.length > 0) {
+            const validationDiv = document.createElement('div');
+            validationDiv.className = 'validation-warning';
+            validationDiv.innerHTML = `
+                <h3>Atenção - Problemas Detectados:</h3>
+                <ul>${validationMessages.map(m => `<li>${m}</li>`).join('')}</ul>
+                <p>Recomenda-se repetir o teste.</p>
+            `;
+            riskElement.parentNode.insertBefore(validationDiv, riskElement.nextSibling);
+        }
     }
 
     resetTest() {
