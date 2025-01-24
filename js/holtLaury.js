@@ -1,23 +1,17 @@
-import GameLogic from './GameLogic.js';
+import Game from './GameLogic.js';
 import DOMManager from './DOMManager.js';
-import ResultCalculator from './ResultCalculator.js';
+import RiskCalculator from './RiskCalculator.js';
 
-class HoltLauryTest {
-    constructor() {
-        this.game = new GameLogic();
-        this.ui = new DOMManager(this);
-        this.calculator = new ResultCalculator();
-    }
-
-    async init() {
-        await this.ui.loadTemplates();
-        this.ui.bindEvents();
-        this.ui.updateRound(this.game.currentRound);
-    }
-}
-
-// Inicialização do app
 document.addEventListener('DOMContentLoaded', () => {
-    const app = new HoltLauryTest();
-    app.init();
+    const app = {
+        game: new Game(),
+        calculator: new RiskCalculator(),
+        domManager: new DOMManager(app)
+    };
+    
+    app.domManager.loadTemplates().then(() => {
+        app.domManager.bindEvents();
+    }).catch(error => {
+        console.error('Failed to load templates:', error);
+    });
 });

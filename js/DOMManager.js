@@ -11,7 +11,8 @@ export default class DOMManager {
 
     bindEvents() {
         document.getElementById('start-test').addEventListener('click', () => this.startTest());
-        document.querySelectorAll('.choice-button').forEach(btn => {
+        document.querySelectorAll('.choice-button').forEach((btn, index) => {
+            btn.dataset.choice = index % 2 === 0 ? 'A' : 'B';
             btn.addEventListener('click', (e) => this.handleChoice(e.target.dataset.choice));
         });
         document.getElementById('continue-button').addEventListener('click', () => this.nextRound());
