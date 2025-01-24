@@ -1,12 +1,11 @@
 export default class DOMManager {
     constructor(app) {
         this.app = app;
-        this.templates = {};
     }
 
     async loadTemplates() {
-        this.templates.resultModal = await fetch('templates/result-modal.html').then(r => r.text());
-        this.templates.controlQuestion = await fetch('templates/control-question.html').then(r => r.text());
+        // Templates are now directly in HTML
+        return Promise.resolve();
     }
 
     bindEvents() {
@@ -20,33 +19,46 @@ export default class DOMManager {
 
     updateRound(round) {
         document.getElementById('current-round').textContent = this.app.game.currentRound + 1;
-        document.getElementById('probability').textContent = this.app.game.rounds[round].probability;
-        document.getElementById('payoff-a').textContent = `R$ ${this.app.game.rounds[round].payoffA.certain.toFixed(2)}`;
-        document.getElementById('payoff-b').textContent = `${(this.app.game.rounds[round].payoffA.uncertain[0]*100).toFixed(0)}% de R$ ${this.app.game.rounds[round].payoffA.uncertain[0].toFixed(2)} ou nada`;
+        
+        // Update probabilities and payoffs for both options
+        const currentRound = this.app.game.rounds[round];
+        document.getElementById('probability').textContent = currentRound.probability;
+        document.getElementById('probability-b').textContent = currentRound.probability;
+        
+        // Option A payoff (certain)
+        document.getElementById('payoff-a').textContent = 
+            `R$ ${currentRound.payoffA.certain.toFixed(2)}`;
+        
+        // Option B payoff (uncertain)
+        document.getElementById('payoff-b').textContent = 
+            `R$ ${currentRound.payoffA.uncertain[0].toFixed(2)} ou R$ ${currentRound.payoffA.uncertain[1].toFixed(2)}`;
     }
 
     showResult(result) {
-        const resultHtml = this.templates.resultModal
-            .replace('{{rho}}', result.interval)
-            .replace('{{interpretation}}', result.interpretation);
-        document.body.insertAdjacentHTML('beforeend', resultHtml);
+        document.getElementById('result-description').textContent = 
+            `Seu intervalo ρ está entre ${result.interval}`;
+        document.getElementById('rho-explanation').textContent = 
+            result.interpretation;
         document.getElementById('result-modal').showModal();
     }
 
     handleChoice(choice) {
         const outcome = this.app.game.processChoice(choice);
         this.app.game.balance += outcome;
-        document.getElementById('current-balance').textContent = this.app.game.balance.toFixed(2);
+        document.getElementById('current-balance').textContent = 
+            this.app.game.balance.toFixed(2);
         
         if (!this.app.game.nextRound()) {
             const result = this.app.calculator.calculateRho(this.app.game.choices);
             this.showResult(result);
+        } else {
+            this.updateRound(this.app.game.currentRound);
         }
     }
 
     startTest() {
-        document.getElementById('welcome-screen').classList.add('hidden');
-        document.getElementById('game-screen').classList.remove('hidden');
+        document.getElementById('welcome-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
         this.updateRound(0);
     }
 

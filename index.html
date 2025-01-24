@@ -30,13 +30,19 @@
             <div class="choice-container">
                 <div class="choice-card" id="choice-a">
                     <h3>Opção A</h3>
-                    <div class="probabilities"></div>
+                    <div class="probabilities">
+                        <p>Probabilidade: <span id="probability">-</span>%</p>
+                        <p>Pagamento: <span id="payoff-a">-</span></p>
+                    </div>
                     <button class="choice-button">Escolher A</button>
                 </div>
 
                 <div class="choice-card" id="choice-b">
                     <h3>Opção B</h3>
-                    <div class="probabilities"></div>
+                    <div class="probabilities">
+                        <p>Probabilidade: <span id="probability-b">-</span>%</p>
+                        <p>Pagamento: <span id="payoff-b">-</span></p>
+                    </div>
                     <button class="choice-button">Escolher B</button>
                 </div>
             </div>
@@ -75,6 +81,6 @@
         </div>
     </div>
 
-    <script src="js/holtLaury.js"></script>
+    <script src="js/holtLaury.js" type="module"></script>
 </body>
 </html>
