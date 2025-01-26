@@ -1,86 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador do Teste Holt-Laury</title>
+    <title>Teste de Holt-Laury Interativo</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="dark-theme">
-    <div id="app">
-        <!-- Welcome Screen -->
-        <div id="welcome-screen" class="screen active">
-            <h1>Simulador do Teste Holt-Laury</h1>
-            <div class="intro-text">
-                <p>Bem-vindo ao simulador interativo do teste Holt-Laury! Esta ferramenta educacional irá ajudá-lo a entender preferências de risco através de uma série de escolhas.</p>
-                <p>Você começará com um saldo virtual de $1000 e fará várias decisões entre opções mais seguras e mais arriscadas.</p>
-                <p>Após cada escolha, explicaremos como sua decisão afeta a estimativa do seu parâmetro de aversão ao risco (ρ).</p>
+<body>
+    <div class="container">
+        <!-- Tela de Introdução -->
+        <div id="intro-screen" class="screen active">
+            <h1>Teste de Holt-Laury</h1>
+            <div class="instructions">
+                <div class="warning-box">
+                    <h3>Instruções Importantes:</h3>
+                    <ul>
+                        <li>Este teste é <strong>fictício</strong> e não oferece prêmios reais</li>
+                        <li>10 escolhas entre opções (A/B) com probabilidades variadas</li>
+                        <li>Uma rodada será sorteada aleatoriamente ao final</li>
+                        <li>Múltiplas reversões (A↔B) invalidam o teste</li>
+                    </ul>
+                </div>
+
+                <div class="prize-explanation">
+                    <h3>Como seu prêmio será determinado:</h3>
+                    <ol>
+                        <li>Cada rodada tem probabilidades diferentes</li>
+                        <li>Ao final, sortearemos aleatoriamente uma rodada</li>
+                        <li>O resultado da rodada sorteada será seu prêmio</li>
+                        <li>Todas as outras são apenas para comparação</li>
+                    </ol>
+                </div>
+
+                <div class="key-points">
+                    <h3>Lembre-se:</h3>
+                    <p>▶ Escolha cada rodada como se fosse a única que conta!</p>
+                    <p>▶ Qualquer rodada pode ser a sorteada</p>
+                    <p>▶ Não há saldo acumulado durante o teste</p>
+                </div>
+                
+                <button id="start-btn" class="btn-primary pulse">Iniciar Teste</button>
             </div>
-            <button id="start-test" class="primary-button">Iniciar Teste</button>
         </div>
 
-        <!-- Game Screen -->
+        <!-- Tela do Jogo -->
         <div id="game-screen" class="screen">
-            <div class="header">
-                <div class="balance">Saldo: $<span id="current-balance">1000</span></div>
-                <div class="progress">Rodada <span id="current-round">1</span>/10</div>
+            <div class="game-header">
+                <div class="scoreboard">
+                    <div class="score-item">
+                        <div class="score-label">Rodada</div>
+                        <div class="score-value" id="current-round">1/10</div>
+                    </div>
+                </div>
+                <div class="rho-meter">
+                    <div class="rho-fill"></div>
+                </div>
             </div>
-
-            <div class="choice-container">
-                <div class="choice-card" id="choice-a">
+            
+            <div class="options-container">
+                <div class="option" id="option-A">
                     <h3>Opção A</h3>
-                    <div class="probabilities">
-                        <p>Probabilidade: <span id="probability">-</span>%</p>
-                        <p>Pagamento: <span id="payoff-a">-</span></p>
-                    </div>
-                    <button class="choice-button">Escolher A</button>
+                    <div class="outcomes" id="outcome-A"></div>
+                    <button class="btn-option">Escolher A</button>
                 </div>
-
-                <div class="choice-card" id="choice-b">
+                
+                <div class="option" id="option-B">
                     <h3>Opção B</h3>
-                    <div class="probabilities">
-                        <p>Probabilidade: <span id="probability-b">-</span>%</p>
-                        <p>Pagamento: <span id="payoff-b">-</span></p>
-                    </div>
-                    <button class="choice-button">Escolher B</button>
+                    <div class="outcomes" id="outcome-B"></div>
+                    <button class="btn-option">Escolher B</button>
                 </div>
             </div>
+        </div>
 
-            <div class="rho-display">
-                <h3>Estimativa Atual do ρ</h3>
-                <div id="rho-value">-</div>
+        <!-- Tela de Feedback -->
+        <div id="feedback-screen" class="screen">
+            <div class="feedback-content">
+                <h2>Resultado da Rodada</h2>
+                <div id="rho-change"></div>
+                <p id="feedback-text"></p>
+                <button id="continue-btn" class="btn-primary">Continuar</button>
             </div>
         </div>
 
-        <!-- Result Modal -->
-        <div id="result-modal" class="modal">
-            <div class="modal-content">
-                <h2>Resultado da Escolha</h2>
-                <div id="result-description"></div>
-                <div id="rho-explanation"></div>
-                <button id="continue-button" class="primary-button">Continuar</button>
+        <!-- Tela de Teste Inválido -->
+        <div id="invalid-screen" class="screen">
+            <div class="feedback-content error">
+                <h2>Teste Interrompido</h2>
+                <div class="alert-icon">⚠️</div>
+                <p id="invalid-reason" class="warning-message"></p>
             </div>
         </div>
 
-        <!-- Final Screen -->
+        <!-- Tela Final -->
         <div id="final-screen" class="screen">
-            <h2>Teste Concluído!</h2>
-            <div class="final-stats">
-                <div class="stat">
-                    <h3>Valor Final do ρ</h3>
-                    <div id="final-rho"></div>
+            <div class="final-result">
+                <h2>Teste Concluído! 🎉</h2>
+                
+                <div class="final-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Coeficiente ρ Final</div>
+                        <div class="stat-value" id="final-rho">0.00</div>
+                    </div>
                 </div>
-                <div class="stat">
-                    <h3>Saldo Final</h3>
-                    <div id="final-balance"></div>
-                </div>
+
+                <button id="restart-btn" class="btn-primary">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 3.31-2.69 6-6 6s-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+                    </svg>
+                    Reiniciar Teste
+                </button>
             </div>
-            <div id="risk-interpretation"></div>
-            <button id="restart-test" class="primary-button">Tentar Novamente</button>
         </div>
     </div>
 
-    <script src="js/holtLaury.js" type="module"></script>
+    <script src="js/holtLaury.js"></script>
 </body>
 </html>
